@@ -1,0 +1,1 @@
+gcloud container clusters create cluster1 --machine-type=e2-standard-2

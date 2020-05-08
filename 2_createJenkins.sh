@@ -1,0 +1,1 @@
+helm install -f jenkinsHelmConfig.yml my-release stable/jenkins
