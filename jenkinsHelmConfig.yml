@@ -213,7 +213,7 @@ master:
   # List of plugins to be install during Jenkins master start
   installPlugins:
     - kubernetes:1.25.3
-    - workflow-job:2.38
+    - workflow-job:2.39
     - workflow-aggregator:2.6
     - credentials-binding:1.21
     - git:4.2.2
@@ -262,16 +262,16 @@ master:
        jobs-config: |
          jobs:
            - url: https://raw.githubusercontent.com/keppi2/logevents-jenkins/master/springJobDsl.jenkinsfile
-           - script: >
-                pipelineJob('spring-framework2') {
-                   definition {
-                      cpsScm {
-                          scm {
-                               git("https://raw.githubusercontent.com/keppi2/logevents-jenkins/master/springJobDsl.jenkinsfile")
-                          }
-                      }
-                    }
-                }
+#           - script: >
+#                pipelineJob('spring-framework2') {
+#                   definition {
+#                      cpsScm {
+#                          scm {
+#                               git("https://raw.githubusercontent.com/keppi2/logevents-jenkins/master/springJobDsl.jenkinsfile")
+#                          }
+#                      }
+#                    }
+#                }
       #initial-job: |
       #  jobs:
       #         pipelineJob('testjobs/default-agent') {

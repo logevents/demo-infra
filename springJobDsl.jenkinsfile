@@ -13,12 +13,12 @@ pipelineJob('spring-framework') {
                 }
                 stage('Build') {
                     steps {
-                        sh "./gradlew -x test --console=plain"
+                        sh "./gradlew -x test --info --console=plain"
                     }
                 }
                 stage('Test') {
                     steps {
-                        sh "./gradlew test --console=plain"
+                        sh "./gradlew test --info --console=plain"
                     }
                 }
             }
