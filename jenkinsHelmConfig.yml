@@ -217,9 +217,8 @@ master:
     - workflow-aggregator:2.6
     - credentials-binding:1.21
     - git:4.2.2
-    - configuration-as-code:1.40
+    - configuration-as-code:1.39
     - job-dsl:1.77
-    - configuration-as-code-support:2.60.3
 
   # Enable to always override the installed plugins with the values of 'master.installPlugins' on upgrade or redeployment.
   # overwritePlugins: true
@@ -260,9 +259,9 @@ master:
     enabled: true
     defaultConfig: false
     configScripts:
-       jobs: |
+       jobs-config: |
          jobs:
-           url: https://raw.githubusercontent.com/keppi2/logevents-jenkins/master/springJob.jenkinsfile
+           - url: https://raw.githubusercontent.com/keppi2/logevents-jenkins/master/springJob.jenkinsfile
       #initial-job: |
       #  jobs:
       #     - script: >

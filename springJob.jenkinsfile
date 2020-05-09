@@ -7,7 +7,7 @@ pipelineJob('spring-framework') {
             stages {
                 stage('Checkout') {
                     steps {
-                        checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/spring-projects/spring-framework']]])
+                        checkout([\$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/spring-projects/spring-framework']]])
                     }
                 }
                 stage('Build') {
