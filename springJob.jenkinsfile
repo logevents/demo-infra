@@ -1,6 +1,7 @@
 pipelineJob('spring-framework') {
   definition {
     cps {
+      sandbox(true)
       script("""\
         pipeline {
             agent any
