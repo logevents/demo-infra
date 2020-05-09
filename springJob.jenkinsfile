@@ -1,29 +1,20 @@
-pipelineJob('spring-framework') {
-  definition {
-    cps {
-      sandbox(true)
-      script("""\
-        pipeline {
-            agent any
-            stages {
-                stage('Checkout') {
-                    steps {
-                        checkout([\$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/spring-projects/spring-framework']]])
-                    }
-                }
-                stage('Build') {
-                    steps {
-                        sh "./gradlew -x test --console=plain"
-                    }
-                }
-                stage('Test') {
-                    steps {
-                        sh "./gradlew test --console=plain"
-                    }
-                }
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/spring-projects/spring-framework']]])
             }
         }
-      """.stripIndent())
+        stage('Build') {
+            steps {
+                sh "./gradlew -x test --console=plain"
+            }
+        }
+        stage('Test') {
+            steps {
+                sh "./gradlew test --console=plain"
+            }
+        }
     }
-  }
 }
