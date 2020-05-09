@@ -265,7 +265,11 @@ master:
            - script: >
                 pipelineJob('spring-framework2') {
                    definition {
-                      cpsScm("https://raw.githubusercontent.com/keppi2/logevents-jenkins/master/springJobDsl.jenkinsfile")
+                      cpsScm {
+                          scm {
+                               git("https://raw.githubusercontent.com/keppi2/logevents-jenkins/master/springJobDsl.jenkinsfile")
+                          }
+                      }
                     }
                 }
       #initial-job: |
