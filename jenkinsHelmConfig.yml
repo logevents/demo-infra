@@ -217,7 +217,9 @@ master:
     - workflow-aggregator:2.6
     - credentials-binding:1.21
     - git:4.2.2
-    - configuration-as-code:1.39
+    - configuration-as-code:1.40
+    - job-dsl:1.77
+    - configuration-as-code-support:2.60.3
 
   # Enable to always override the installed plugins with the values of 'master.installPlugins' on upgrade or redeployment.
   # overwritePlugins: true
@@ -258,10 +260,30 @@ master:
     enabled: true
     defaultConfig: false
     configScripts:
-     jobs: |
-       jobs:
-         - url: https://example.acme.org/job-dsl/testjob.groovy
-  # Optionally specify additional init-containers
+       jobs: |
+         jobs:
+           url: https://raw.githubusercontent.com/keppi2/logevents-jenkins/master/springJob.jenkinsfile
+      #initial-job: |
+      #  jobs:
+      #     - script: >
+      #         pipelineJob('testjobs/default-agent') {
+      #           definition {
+      #             cps {
+      #               script("""\
+      #                 pipeline {
+      #                   agent any
+      #                   stages {
+      #                     stage ('test') {
+      #                       steps {
+      #                         echo "hello"
+      #                       }
+      #                     }
+      #                   }
+      #                 }""".stripIndent())
+      #             }
+      #           }
+      #         }
+  # Option ally specify additional init-containers
   customInitContainers: []
   # - name: custom-init
   #   image: "alpine:3.7"
