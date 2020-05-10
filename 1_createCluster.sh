@@ -1,1 +1,1 @@
-gcloud container clusters create cluster1 --machine-type=e2-standard-2
+gcloud container clusters create cluster1 --machine-type=e2-standard-2 --min-nodes=2 --max-nodes=10 --enable-autoscaling
