@@ -124,6 +124,7 @@ master:
   #     value: "http://192.168.64.1:3128"
   # Set min/max heap here if needed with:
   # javaOpts: "-Xms512m -Xmx512m"
+  javaOpts: "-Dhudson.model.DownloadService.noSignatureCheck=true"
   # jenkinsOpts: ""
   # jenkinsUrl: ""
   # If you set this prefix and use ingress controller then you might want to set the ingress path below
@@ -213,7 +214,7 @@ master:
   # List of plugins to be install during Jenkins master start
   installPlugins:
     - kubernetes:1.25.3
-    - workflow-job:2.39
+    - workflow-job:2.38
     - workflow-aggregator:2.6
     - credentials-binding:1.21
     - git:4.2.2
@@ -221,7 +222,7 @@ master:
     - job-dsl:1.77
 
   # Enable to always override the installed plugins with the values of 'master.installPlugins' on upgrade or redeployment.
-  # overwritePlugins: true
+  overwritePlugins: true
 
   # Configures if plugins bundled with `master.image` should be overwritten with the values of 'master.installPlugins' on upgrade or redeployment.
   master.overwritePluginsFromImage: true
@@ -261,36 +262,8 @@ master:
     configScripts:
        jobs-config: |
          jobs:
-           - url: https://raw.githubusercontent.com/keppi2/logevents-jenkins/master/springJobDsl.jenkinsfile
-#           - script: >
-#                pipelineJob('spring-framework2') {
-#                   definition {
-#                      cpsScm {
-#                          scm {
-#                               git("https://raw.githubusercontent.com/keppi2/logevents-jenkins/master/springJobDsl.jenkinsfile")
-#                          }
-#                      }
-#                    }
-#                }
-      #initial-job: |
-      #  jobs:
-      #         pipelineJob('testjobs/default-agent') {
-      #           definition {
-      #             cps {
-      #               script("""\
-      #                 pipeline {
-      #                   agent any
-      #                   stages {
-      #                     stage ('test') {
-      #                       steps {
-      #                         echo "hello"
-      #                       }
-      #                     }
-      #                   }
-      #                 }""".stripIndent())
-      #             }
-      #           }
-      #         }
+           - url: https://raw.githubusercontent.com/keppi2/logevents-jenkins/master/jobDslSampleSpring.jenkinsfile
+           - url: https://raw.githubusercontent.com/keppi2/logevents-jenkins/master/jobDslSampleJunit.jenkinsfile
   # Option ally specify additional init-containers
   customInitContainers: []
   # - name: custom-init
