@@ -1,8 +1,10 @@
-pipelineJob('junit-framework') {
-  definition {
-    cps {
-      sandbox(true)
-      script("""\
+
+private void createJob(java.lang.String jobName, projectUrl) {
+    pipelineJob(jobName) {
+        definition {
+            cps {
+                sandbox(true)
+                script("""\
         pipeline {
             environment {
                 def initEnableWarnings = 'allprojects {  gradle.projectsEvaluated { tasks.withType(JavaCompile) { options.compilerArgs << \"-Xlint:all\" } } }'
@@ -11,7 +13,7 @@ pipelineJob('junit-framework') {
             stages {
                 stage('Checkout') {
                     steps {
-                        checkout([\$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/junit-team/junit5.git']]])
+                        checkout([\$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: '$projectUrl']]])
 
 
                         writeFile file: "init.gradle", text: initEnableWarnings
@@ -30,6 +32,12 @@ pipelineJob('junit-framework') {
             }
         }
       """.stripIndent())
+            }
+        }
     }
-  }
 }
+
+createJob("spring-framework", "https://github.com/spring-projects/spring-framework")
+createJob("spring-boot", "https://github.com/spring-projects/spring-boot")
+createJob("junit-framework", "https://github.com/junit-team/junit5.git")
+
