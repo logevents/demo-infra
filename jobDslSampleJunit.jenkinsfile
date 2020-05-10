@@ -1,4 +1,4 @@
-pipelineJob('spring-framework') {
+pipelineJob('junit-framework') {
   definition {
     cps {
       sandbox(true)
