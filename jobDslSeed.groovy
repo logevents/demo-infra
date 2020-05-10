@@ -37,7 +37,8 @@ private void createJob(java.lang.String jobName, projectUrl) {
     }
 }
 
-createJob("spring-framework", "https://github.com/spring-projects/spring-framework")
-createJob("spring-boot", "https://github.com/spring-projects/spring-boot")
+createJob("spring-framework", "https://github.com/spring-projects/spring-framework.git")
+createJob("spring-boot", "https://github.com/spring-projects/spring-boot.git")
+createJob("spring-batch", "https://github.com/spring-projects/spring-batch.git")
 createJob("junit-framework", "https://github.com/junit-team/junit5.git")
 

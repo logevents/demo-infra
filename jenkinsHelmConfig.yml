@@ -262,7 +262,7 @@ master:
     configScripts:
        jobs-config: |
          jobs:
-           - url: https://raw.githubusercontent.com/keppi2/logevents-jenkins/master/jobDslSeed.jenkinsfile
+           - url: https://raw.githubusercontent.com/keppi2/logevents-jenkins/master/jobDslSeed.groovy
   # Option ally specify additional init-containers
   customInitContainers: []
   # - name: custom-init
