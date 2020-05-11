@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins-master
+  labels:
+    app: jenkins-master
+spec:
+  ports:
+    - port: 80
+      name: jenkins-master
+  clusterIP: None
+  selector:
+    app: jenkins-master
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: jenkins-master
+spec:
+  serviceName: "nginx"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: jenkins-master
+  template:
+    metadata:
+      labels:
+        app: jenkins-master
+    spec:
+      containers:
+        - name: jenkins-master
+          image: gcr.io/liquid-sylph-273719/jenkins-master:v1
+          ports:
+            - containerPort: 80
+              name: jenkins-master
+          volumeMounts:
+            - name: jenkins-home
+              mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+    - metadata:
+        name: www
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi

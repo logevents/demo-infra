@@ -4,11 +4,17 @@ pipelineJob('spring-framework') {
       sandbox(true)
       script("""\
         pipeline {
+            environment {
+                def initEnableWarnings = 'allprojects {  gradle.projectsEvaluated { tasks.withType(JavaCompile) { options.compilerArgs << \"-Xlint:all\" } } }''
+            }
             agent any
             stages {
                 stage('Checkout') {
                     steps {
                         checkout([\$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/spring-projects/spring-framework']]])
+
+
+                        writeFile file: "init.gradle", text: initEnableWarnings
                     }
                 }
                 stage('Build') {
