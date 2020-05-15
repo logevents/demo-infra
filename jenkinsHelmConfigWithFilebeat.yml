@@ -220,6 +220,7 @@ master:
     - git:4.2.2
     - configuration-as-code:1.39
     - job-dsl:1.77
+    - parameterized-trigger:2.36
 
   # Enable to always override the installed plugins with the values of 'master.installPlugins' on upgrade or redeployment.
   #overwritePlugins: true
@@ -439,10 +440,10 @@ agent:
   privileged: false
   resources:
     requests:
-      cpu: "512m"
+      cpu: "1000m"
       memory: "4000Mi"
     limits:
-      cpu: "512m"
+      cpu: "1000m"
       memory: "4000Mi"
   # You may want to change this to true while testing a new image
   alwaysPullImage: false

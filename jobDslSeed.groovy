@@ -7,7 +7,7 @@ private void createJob(java.lang.String jobName, projectUrl) {
                 script("""\
         pipeline {
             environment {
-                def initEnableWarnings = 'allprojects {  gradle.projectsEvaluated { tasks.withType(JavaCompile) { options.compilerArgs << \"-Xlint:all\" } } }'
+                def initEnableWarnings = 'allprojects {  tasks.withType(JavaCompile) { options.compilerArgs << "-Xlint:all" } }'
             }
             agent any
             stages {
@@ -21,12 +21,12 @@ private void createJob(java.lang.String jobName, projectUrl) {
                 }
                 stage('Build') {
                     steps {
-                        sh "./gradlew -x test --init-script init.gradle --info --console=plain"
+                        sh "./gradlew clean build -x test --init-script init.gradle --info"
                     }
                 }
                 stage('Test') {
                     steps {
-                        sh "./gradlew test --init-script init.gradle --info --console=plain"
+                        sh "./gradlew clean test --init-script init.gradle --info"
                     }
                 }
             }
