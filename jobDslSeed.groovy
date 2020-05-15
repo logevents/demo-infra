@@ -18,7 +18,16 @@ private void createJob(java.lang.String jobName, projectUrl) {
                     steps {
                         checkout([\$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: '$projectUrl']]])
 
-
+                        
+                        
+                        if(!\$checkoutdate.equals("now")){
+                            println("checkoutdate is \$checkoutdate")
+                            sh 'git rev-list -1 --before="\\$checkoutdate" --date="format:dd.mm.yyyy" master'
+                            sh 'git checkout `git rev-list -1 --before="\\$checkoutdate" --date="format:dd.mm.yyyy" master`'
+                        }else{
+                            println("checkoutdate (\$checkoutdate) is now")
+                        }
+                        
                         writeFile file: "init.gradle", text: initEnableWarnings
                     }
                 }
