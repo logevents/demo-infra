@@ -1,6 +1,9 @@
 
 private void createJob(java.lang.String jobName, projectUrl) {
     pipelineJob(jobName) {
+        parameters {
+            stringParam('checkoutdate', 'now', 'hh.mm.dddd  or now')
+        }
         definition {
             cps {
                 sandbox(true)
