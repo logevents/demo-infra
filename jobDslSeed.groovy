@@ -1,3 +1,43 @@
+def createTriggerJob(java.lang.String jobName) {
+    pipelineJob("trigger-" + jobName) {
+        parameters {
+            stringParam('from', '01.01.2018', 'hh.mm.dddd')
+            stringParam('to', '01.01.2020', 'hh.mm.dddd')
+            stringParam('steps', '30', 'days')
+        }
+        definition {
+            cps {
+                sandbox(true)
+                script("""\
+        import java.text.SimpleDateFormat
+import java.time.ZoneId
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
+@NonCPS
+def trigger () {
+    def formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")             
+    for (LocalDate date = LocalDate.parse(from, formatter); 
+            date.isBefore(LocalDate.parse(to, formatter)); date = date.plusDays($steps))
+    {
+        println "trigger $jobName with date \$date"
+        build job: '$jobName', 
+              parameters: [[\$class: 'StringParameterValue',
+                    name: 'checkoutdate', 
+                    value: date.format(formatter)]],
+              wait: false
+    }
+}
+
+println "going from $from to $to in steps $steps"
+
+trigger()
+
+      """.stripIndent())
+            }
+        }
+    }
+}
 
 private void createJob(java.lang.String jobName, projectUrl) {
     pipelineJob(jobName) {
@@ -19,13 +59,14 @@ private void createJob(java.lang.String jobName, projectUrl) {
                         checkout([\$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: '$projectUrl']]])
 
                         
-                        
-                        if(!\$checkoutdate.equals("now")){
-                            println("checkoutdate is \$checkoutdate")
-                            sh 'git rev-list -1 --before="\$checkoutdate" --date="format:dd.mm.yyyy" master'
-                            sh 'git checkout `git rev-list -1 --before="\$checkoutdate" --date="format:dd.mm.yyyy" master`'
-                        }else{
-                            println("checkoutdate (\$checkoutdate) is now")
+                        script {
+                            if(!\$checkoutdate.equals("now")){
+                                println("checkoutdate is \$checkoutdate")
+                                sh 'git rev-list -1 --before="\$checkoutdate" --date="format:dd.mm.yyyy" origin/master'
+                                sh 'git checkout `git rev-list -1 --before="\$checkoutdate" --date="format:dd.mm.yyyy" master`'
+                            }else{
+                                println("checkoutdate (\$checkoutdate) is now")
+                            }
                         }
                         
                         writeFile file: "init.gradle", text: initEnableWarnings
@@ -48,6 +89,7 @@ private void createJob(java.lang.String jobName, projectUrl) {
         }
     }
 }
+
 
 createJob("spring-framework", "https://github.com/spring-projects/spring-framework.git")
 createJob("spring-boot", "https://github.com/spring-projects/spring-boot.git")
