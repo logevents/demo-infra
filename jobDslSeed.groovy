@@ -23,10 +23,10 @@ private void createJob(java.lang.String jobName, projectUrl) {
 
                         
                         script {
-                            if(!\$checkoutdate.equals("now")){
+                            if(!checkoutdate.equals("now")){
                                 println("checkoutdate is \$checkoutdate")
                                 sh 'git rev-list -1 --before="\$checkoutdate" --date="format:dd.mm.yyyy" origin/master'
-                                sh 'git checkout `git rev-list -1 --before="\$checkoutdate" --date="format:dd.mm.yyyy" master`'
+                                sh 'git checkout `git rev-list -1 --before="\$checkoutdate" --date="format:dd.mm.yyyy" origin/master`'
                             }else{
                                 println("checkoutdate (\$checkoutdate) is now")
                             }
@@ -55,7 +55,7 @@ private void createJob(java.lang.String jobName, projectUrl) {
         parameters {
             stringParam('from', '01.01.2018', 'hh.mm.dddd')
             stringParam('to', '01.01.2020', 'hh.mm.dddd')
-            stringParam('steps', '30', 'days')
+            stringParam('stepInDays', '30', 'days')
         }
         definition {
             cps {
@@ -70,7 +70,7 @@ import java.time.format.DateTimeFormatter
 def trigger () {
     def formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")             
     for (LocalDate date = LocalDate.parse(from, formatter); 
-            date.isBefore(LocalDate.parse(to, formatter)); date = date.plusDays(steps))
+            date.isBefore(LocalDate.parse(to, formatter)); date = date.plusDays(Integer.parseInt(stepInDays)))
     {
         println "trigger $jobName with date \$date"
         build job: '$jobName', 
