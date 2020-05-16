@@ -1,42 +1,5 @@
 def createTriggerJob(java.lang.String jobName) {
-    pipelineJob("trigger-" + jobName) {
-        parameters {
-            stringParam('from', '01.01.2018', 'hh.mm.dddd')
-            stringParam('to', '01.01.2020', 'hh.mm.dddd')
-            stringParam('steps', '30', 'days')
-        }
-        definition {
-            cps {
-                sandbox(true)
-                script("""\
-        import java.text.SimpleDateFormat
-import java.time.ZoneId
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
-@NonCPS
-def trigger () {
-    def formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")             
-    for (LocalDate date = LocalDate.parse(from, formatter); 
-            date.isBefore(LocalDate.parse(to, formatter)); date = date.plusDays($steps))
-    {
-        println "trigger $jobName with date \$date"
-        build job: '$jobName', 
-              parameters: [[\$class: 'StringParameterValue',
-                    name: 'checkoutdate', 
-                    value: date.format(formatter)]],
-              wait: false
-    }
-}
-
-println "going from $from to $to in steps $steps"
-
-trigger()
-
-      """.stripIndent())
-            }
-        }
-    }
 }
 
 private void createJob(java.lang.String jobName, projectUrl) {
@@ -84,6 +47,44 @@ private void createJob(java.lang.String jobName, projectUrl) {
                 }
             }
         }
+      """.stripIndent())
+            }
+        }
+    }
+    pipelineJob("trigger-" + jobName) {
+        parameters {
+            stringParam('from', '01.01.2018', 'hh.mm.dddd')
+            stringParam('to', '01.01.2020', 'hh.mm.dddd')
+            stringParam('steps', '30', 'days')
+        }
+        definition {
+            cps {
+                sandbox(true)
+                script("""\
+        import java.text.SimpleDateFormat
+import java.time.ZoneId
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
+@NonCPS
+def trigger () {
+    def formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")             
+    for (LocalDate date = LocalDate.parse(from, formatter); 
+            date.isBefore(LocalDate.parse(to, formatter)); date = date.plusDays(\$steps))
+    {
+        println "trigger $jobName with date \$date"
+        build job: '$jobName', 
+              parameters: [[\$class: 'StringParameterValue',
+                    name: 'checkoutdate', 
+                    value: date.format(formatter)]],
+              wait: false
+    }
+}
+
+println "going from \$from to \$to in steps \$steps"
+
+trigger()
+
       """.stripIndent())
             }
         }

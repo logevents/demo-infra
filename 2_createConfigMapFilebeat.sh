@@ -1,1 +1,1 @@
-kubectl create configmap jenkins-filebeat-minimal2 --from-file=minimalFilebeatConfig.yml
+kubectl create configmap jenkins-filebeat-minimal --from-file=minimalFilebeatConfig.yml
