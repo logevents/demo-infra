@@ -70,7 +70,7 @@ import java.time.format.DateTimeFormatter
 def trigger () {
     def formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")             
     for (LocalDate date = LocalDate.parse(from, formatter); 
-            date.isBefore(LocalDate.parse(to, formatter)); date = date.plusDays(\$steps))
+            date.isBefore(LocalDate.parse(to, formatter)); date = date.plusDays(steps))
     {
         println "trigger $jobName with date \$date"
         build job: '$jobName', 
