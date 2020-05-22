@@ -313,6 +313,13 @@ master:
       - name: filebeat
         image: docker.elastic.co/beats/filebeat:7.6.2
         args: []
+        env:
+          - name: "master"
+            value: "{{ tpl .Release.Name . }}"
+          - name: "protocol"
+            value: "http"
+          - name: "domain"
+            value: "{{ tpl .Release.Name . }}"
         volumeMounts:
           - name: filebeat-config
             mountPath: "/usr/share/filebeat/filebeat.yml"
@@ -585,7 +592,7 @@ persistence:
   volumes:
     - name: filebeat-config
       configMap:
-        name: jenkins-filebeat-minimal2
+        name: jenkins-filebeat-minimal
   mounts:
   #  - mountPath: /var/nothing
   #    name: nothing
