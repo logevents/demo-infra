@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: build
+spec:
+  template:
+    spec:
+      containers:
+      - name: build
+        image: openjdk:8
+        command: ["bash",  "-ec",
+                  "mkdir -p /tmp/build && cd /tmp/build
+                  && git clone https://github.com/logevents/demo-streaming-apps.git
+                  && cd demo-streaming-apps/transform
+                  && ./gradlew distZip
+                  && curl -XPOST --data-binary @build/distributions/transform.zip http://repo/transform.zip"]
+      restartPolicy: Never

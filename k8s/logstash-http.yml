@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: logstash-http
+spec:
+  selector:
+    app: logstash-http
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-http
+data:
+  logstash.yml: |
+    pipeline.workers: 2
+    pipeline.batch.size: 250
+    pipeline.batch.delay: 50
+    xpack.monitoring.enabled: false
+
+    path.config: /usr/share/logstash/config/pipelines/logstash.conf
+
+    http.host: 0.0.0.0
+  logstash.conf: |
+    input {
+        http {
+            port => "8080"
+            codec => json
+        }
+    }
+
+    filter {
+        if [message] == 'hi there' {
+            mutate { add_field => { "[answer]" => "hi there, too" } }
+        }
+    }
+
+    output {
+        stdout { }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: logstash-http
+  name: logstash-http
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logstash-http
+  template:
+    metadata:
+      labels:
+        app: logstash-http
+    spec:
+      containers:
+        - image: logstash:7.6.2
+          name: logstash
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ALWAYS_REDEPLOY
+              value: "${CURRENT_TIME}"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /usr/share/logstash/config/logstash.yml
+              subPath: logstash.yml
+            - name: config-volume
+              mountPath: /usr/share/logstash/config/pipelines/logstash.conf
+              subPath: logstash.conf
+      volumes:
+        - name: config-volume
+          configMap:
+            name: logstash-http
+            items:
+              - key: logstash.yml
+                path: logstash.yml
+              - key: logstash.conf
+                path: logstash.conf

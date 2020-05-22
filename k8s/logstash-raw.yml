@@ -1,0 +1,104 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: logstash-raw
+spec:
+  selector:
+    app: logstash-raw
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-raw
+data:
+  logstash.yml: |
+    pipeline.workers: 2
+    pipeline.batch.size: 250
+    pipeline.batch.delay: 50
+    xpack.monitoring.enabled: false
+
+    path.config: /usr/share/logstash/config/pipelines/logstash.conf
+
+    http.host: 0.0.0.0
+  logstash.conf: |
+    input {
+        kafka {
+            group_id => "logstash-raw"
+            client_id => "logstash-raw"
+            bootstrap_servers => "${KAFKA_SERVERS}"
+            auto_offset_reset => "latest"
+            topics_pattern => "${RAW_TOPIC_PATTERN}"
+            decorate_events => true
+            codec => json
+        }
+    }
+
+    filter {
+        mutate { copy => { "[log][file][path]" => "buildTmp" } }
+        mutate { gsub => [ "buildTmp", "^.*?/jobs/", "/" ] }
+        mutate { gsub => [ "buildTmp", "/jobs/", "/" ] }
+        grok { match => { "buildTmp" => "%{PATH:jobName}/builds/%{INT:buildNum:int}/log" } }
+        mutate { gsub => [ "jobName", "^/", ""] }
+        mutate { copy => { "jobName" => "buildUrl" } }
+        mutate { split => { "buildUrl" => "/" } }
+        mutate { join => { "buildUrl" => "/job/" } }
+        mutate { update => { "buildUrl" => "%{[fields][protocol]}://%{[fields][master]}.%{[fields][domainSuffix]}/job/%{[buildUrl]}/%{buildNum}" } }
+        mutate { rename => ["[fields][master]", "[master]"] }
+        mutate { rename => ["[log][offset]", "[fileOffset]"] }
+        mutate { add_field => { "kafkaOffset" => "%{[@metadata][kafka][offset]}}" } }
+        mutate { convert => { "kafkaOffset" => "integer" } }
+        mutate { remove_field => [ "buildTmp", "fields", "host", "@metadata", "input", "agent", "ecs" ] }
+    }
+
+    output {
+        kafka {
+            codec => json
+            bootstrap_servers => "${KAFKA_SERVERS}"
+            topic_id => "${LOGEVENT_TOPIC}"
+        }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: logstash-raw
+  name: logstash-raw
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logstash-raw
+  template:
+    metadata:
+      labels:
+        app: logstash-raw
+    spec:
+      containers:
+        - image: logstash:7.6.2
+          name: logstash
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ALWAYS_REDEPLOY
+              value: "${CURRENT_TIME}"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /usr/share/logstash/config/logstash.yml
+              subPath: logstash.yml
+            - name: config-volume
+              mountPath: /usr/share/logstash/config/pipelines/logstash.conf
+              subPath: logstash.conf
+      volumes:
+        - name: config-volume
+          configMap:
+            name: logstash-raw
+            items:
+              - key: logstash.yml
+                path: logstash.yml
+              - key: logstash.conf
+                path: logstash.conf

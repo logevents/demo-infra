@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hello-kubectl
+  name: hello-kubectl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-kubectl
+  template:
+    metadata:
+      labels:
+        app: hello-kubectl
+    spec:
+      serviceAccountName: admin-role
+      containers:
+        - image: appropriate/curl
+          name: hello-kubectl
+          command: ["sh", "-ec", "cd /tmp
+          && curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+          && chmod 755 ./kubectl
+          && while true; do echo sleeping 1s...; sleep 1; done"]

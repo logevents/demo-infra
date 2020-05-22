@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: kibana
+  ports:
+    - protocol: TCP
+      name: 'kibana'
+      port: 45601
+      targetPort: 5601

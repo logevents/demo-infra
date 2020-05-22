@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sleeping
+  name: sleeping
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sleeping
+  template:
+    metadata:
+      labels:
+        app: sleeping
+    spec:
+      containers:
+        - image: alpine:3.8
+          name: sleeping
+          command: ["/bin/sh", "-ec", "while true; do echo sleeping 1s...; sleep 1; done"]

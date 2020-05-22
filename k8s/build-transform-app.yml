@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: build-transform-app
+spec:
+  selector:
+    app: build-transform-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: build-transform-app
+  name: build-transform-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: build-transform-app
+  template:
+    metadata:
+      labels:
+        app: build-transform-app
+    spec:
+      containers:
+      - image: openjdk:8
+        name: app
+        ports:
+        - containerPort: 8080
+        command: ["bash", "-ec", "cd /opt
+          && curl -O http://repo/transform.zip && unzip transform.zip
+          && ./transform/bin/transform buildTf kafka-0.kafka:9092 build-agg latest logevent-1 build-1"]

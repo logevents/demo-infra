@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: logstash-view-key
+spec:
+  selector:
+    app: logstash-view-key
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-view-key
+data:
+  logstash.yml: |
+    pipeline.workers: 2
+    pipeline.batch.size: 250
+    pipeline.batch.delay: 50
+    xpack.monitoring.enabled: false
+
+    path.config: /usr/share/logstash/config/pipelines/logstash.conf
+
+    http.host: 0.0.0.0
+  logstash.conf: |
+    input {
+        kafka {
+            group_id => "logstash-view-key"
+            client_id => "logstash-view-key"
+            bootstrap_servers => "${KAFKA_SERVERS}"
+            auto_offset_reset => "latest"
+            topics_pattern => "${LOGSTASH_VIEW_KEY_PATTERN}"
+            decorate_events => true
+            codec => json
+        }
+    }
+
+    filter {
+    }
+
+    output {
+        elasticsearch {
+            document_id => "%{[@metadata][kafka][key]}"
+            index => "%{[@metadata][kafka][topic]}-%{+YYYY.MM.dd}"
+            hosts => "elastic:9200"
+        }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: logstash-view-key
+  name: logstash-view-key
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logstash-view-key
+  template:
+    metadata:
+      labels:
+        app: logstash-view-key
+    spec:
+      containers:
+        - image: logstash:7.6.2
+          name: logstash
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ALWAYS_REDEPLOY
+              value: "${CURRENT_TIME}"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /usr/share/logstash/config/logstash.yml
+              subPath: logstash.yml
+            - name: config-volume
+              mountPath: /usr/share/logstash/config/pipelines/logstash.conf
+              subPath: logstash.conf
+      volumes:
+        - name: config-volume
+          configMap:
+            name: logstash-view-key
+            items:
+              - key: logstash.yml
+                path: logstash.yml
+              - key: logstash.conf
+                path: logstash.conf

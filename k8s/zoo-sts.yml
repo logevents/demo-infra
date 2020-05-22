@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: zoo
+spec:
+  selector:
+    app: zoo
+  ports:
+    - protocol: TCP
+      port: 2881
+      targetPort: 2881
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: zoo
+  name: zoo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zoo
+  serviceName: zoo
+  template:
+    metadata:
+      labels:
+        app: zoo
+    spec:
+      enableServiceLinks: false
+      containers:
+        - image: confluentinc/cp-zookeeper:5.5.0
+          name: zoo
+          ports:
+            - containerPort: 2881
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/zookeeper
+          env:
+            - name: ZOOKEEPER_CLIENT_PORT
+              value: "2881"
+            - name: ZOOKEEPER_TICK_TIME
+              value: "2000"
+#            - name: KAFKA_HEAP_OPTS
+#              value: "Xms1000M Xmx1000M"
+          resources:
+            requests:
+              memory: "500Mi"
+              cpu: "250m"
+            limits:
+              memory: "800Mi"
+              cpu: "500m"
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
