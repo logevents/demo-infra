@@ -18,28 +18,26 @@ filebeat.inputs:
   # you can use different inputs for various configurations.
   # Below are the input specific configurations.
 
+  #logs from build jobs
   - type: log
-
-    # Change to true to enable this input configuration.
     enabled: true
-
-    # Paths that should be crawled and fetched. Glob based paths.
     paths:
       - /mnt/jenkins_home/jobs/*/builds/*/log
-      #- c:\programdata\elasticsearch\logs\*
 
-    # Optional additional fields. These fields can be freely picked
-    # to add additional information to the crawled log files for filtering
-    #fields:
-    #  level: debug
-    #  review: 1
-
+  # logs from slaves
+  - type: log
+    enabled: true
+    paths:
+      - /var/jenkins_home/logs/slaves/*/slave.log
+      -
+#TODO Jenkins master log
 
 
 fields:
-  master: "${MASTER}"
   protocol: "${PROTOCOL}"
+  master: "${MASTER}"
   domain: "${DOMAIN}"
+
 #============================= Filebeat modules ===============================
 
 filebeat.config.modules:
