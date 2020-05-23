@@ -237,9 +237,12 @@ master:
   #  - "method groovy.json.JsonSlurperClassic parseText java.lang.String"
   #  - "new groovy.json.JsonSlurperClassic"
   # List of groovy init scripts to be executed during Jenkins master start
-  initScripts: []
-  #  - |
-  #    print 'adding global pipeline libraries, register properties, bootstrap jobs...'
+  initScripts:
+    - |
+      Jenkins.instance.getItemByFullName("spring-framework").scheduleBuild2(0);
+      Jenkins.instance.getItemByFullName("spring-framework").scheduleBuild2(0);
+      Jenkins.instance.getItemByFullName("spring-framework").scheduleBuild2(0);
+
   # Kubernetes secret that contains a 'credentials.xml' for Jenkins
   # credentialsXmlSecret: jenkins-credentials
   # Kubernetes secret that contains files to be put in the Jenkins 'secrets' directory,
@@ -258,6 +261,7 @@ master:
   # /var/jenkins_home/casc_configs (by default) and will be processed by the Configuration as Code Plugin.  The lines after each |
   # become the content of the configuration yaml file.  The first line after this is a JCasC root element, eg jenkins, credentials,
   # etc.  Best reference is https://<jenkins_url>/configuration-as-code/reference.  The example below creates a welcome message:
+
   JCasC:
     enabled: true
     defaultConfig: false
