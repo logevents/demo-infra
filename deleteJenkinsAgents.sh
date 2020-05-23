@@ -1,0 +1,1 @@
+kubectl get po  --no-headers=true | awk '/default-/{print $1}' | xargs  kubectl delete po
