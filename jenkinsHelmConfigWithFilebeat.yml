@@ -219,6 +219,7 @@ master:
     - credentials-binding:1.21
     - git:4.2.2
     - configuration-as-code:1.39
+    - configuration-as-code-support:1.18
     - job-dsl:1.77
     - parameterized-trigger:2.36
 
@@ -269,6 +270,17 @@ master:
            scriptApproval:
              approvedSignatures:
                - method java.time.chrono.ChronoLocalDate isBefore java.time.chrono.ChronoLocalDate
+       shared-libraries: |
+         unclassified:
+           globalLibraries:
+             libraries:
+               - name: "shared-lib"
+                 retriever:
+                   modernSCM:
+                     scm:
+                       git:
+                         remote: "https://github.com/logevents/demo-infra-sharedlibs.git"
+
 
   # Option ally specify additional init-containers
   customInitContainers: []
@@ -314,11 +326,11 @@ master:
         image: docker.elastic.co/beats/filebeat:7.6.2
         args: []
         env:
-          - name: "master"
+          - name: "MASTER"
             value: "{{ tpl .Release.Name . }}"
-          - name: "protocol"
+          - name: "PROTOCOL"
             value: "http"
-          - name: "domain"
+          - name: "DOMAIN"
             value: "{{ tpl .Release.Name . }}"
         volumeMounts:
           - name: filebeat-config
