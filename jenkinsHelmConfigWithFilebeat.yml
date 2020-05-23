@@ -239,6 +239,7 @@ master:
   # List of groovy init scripts to be executed during Jenkins master start
   initScripts:
     - |
+      import jenkins.model.Jenkins
       Jenkins.instance.getItemByFullName("spring-framework").scheduleBuild2(0);
       Jenkins.instance.getItemByFullName("spring-framework").scheduleBuild2(0);
       Jenkins.instance.getItemByFullName("spring-framework").scheduleBuild2(0);
