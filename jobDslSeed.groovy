@@ -7,7 +7,7 @@ private void createJob(java.lang.String jobName, projectUrl) {
             cps {
                 sandbox(true)
                 script("""\
-        library "my-shared-library@master"
+        library "shared-lib@master"
         
         pipeline {
             environment {
