@@ -1,7 +1,3 @@
-def createTriggerJob(java.lang.String jobName) {
-
-}
-
 private void createJob(java.lang.String jobName, projectUrl) {
     pipelineJob(jobName) {
         parameters {
@@ -11,6 +7,8 @@ private void createJob(java.lang.String jobName, projectUrl) {
             cps {
                 sandbox(true)
                 script("""\
+        library "my-shared-library@master"
+        
         pipeline {
             environment {
                 def initEnableWarnings = 'allprojects {  tasks.withType(JavaCompile) { options.compilerArgs << "-Xlint:all" } }'
@@ -19,30 +17,29 @@ private void createJob(java.lang.String jobName, projectUrl) {
             stages {
                 stage('Checkout') {
                     steps {
-                        checkout([\$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: '$projectUrl']]])
+                        durationEvent("checkout"){
+                        
+                            checkout([\$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: '$projectUrl']]])
 
+                            checkoutByDate(\$checkoutdate)
+                       
                         
-                        script {
-                            if(!checkoutdate.equals("now")){
-                                println("checkoutdate is \$checkoutdate")
-                                sh 'git rev-list -1 --before="\$checkoutdate" --date="format:dd.mm.yyyy" origin/master'
-                                sh 'git checkout `git rev-list -1 --before="\$checkoutdate" --date="format:dd.mm.yyyy" origin/master`'
-                            }else{
-                                println("checkoutdate (\$checkoutdate) is now")
-                            }
+                            writeFile file: "init.gradle", text: initEnableWarnings
                         }
-                        
-                        writeFile file: "init.gradle", text: initEnableWarnings
                     }
                 }
                 stage('Build') {
                     steps {
-                        sh "./gradlew clean build -x test --init-script init.gradle --info"
+                        durationEvent("build"){
+                            sh "./gradlew clean build -x test --init-script init.gradle --info"
+                        }                       
                     }
                 }
                 stage('Test') {
                     steps {
-                        sh "./gradlew clean test --init-script init.gradle --info"
+                        durationEvent("test"){
+                            sh "./gradlew clean test --init-script init.gradle --info"
+                        }  
                     }
                 }
             }
@@ -51,7 +48,7 @@ private void createJob(java.lang.String jobName, projectUrl) {
             }
         }
     }
-    pipelineJob("trigger-" + jobName) {
+    pipelineJob(jobName + "-trigger") {
         parameters {
             stringParam('from', '01.01.2018', 'hh.mm.dddd')
             stringParam('to', '01.01.2020', 'hh.mm.dddd')
