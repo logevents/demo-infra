@@ -240,9 +240,9 @@ master:
   initScripts:
     - |
       import jenkins.model.Jenkins;
-      Jenkins.instance.getItemByFullName("spring-framework").scheduleBuild2(0);
-      Jenkins.instance.getItemByFullName("spring-framework").scheduleBuild2(0);
-      Jenkins.instance.getItemByFullName("spring-framework").scheduleBuild2(0);
+      Jenkins.instance.getItemByFullName("spring-framework").scheduleBuild2(1);
+      Jenkins.instance.getItemByFullName("spring-framework").scheduleBuild2(2);
+      Jenkins.instance.getItemByFullName("spring-framework").scheduleBuild2(3);
 
   # Kubernetes secret that contains a 'credentials.xml' for Jenkins
   # credentialsXmlSecret: jenkins-credentials
@@ -269,7 +269,7 @@ master:
     configScripts:
        jobs-config: |
          jobs:
-           - url: https://raw.githubusercontent.com/keppi2/logevents-jenkins/master/jobDslSeed.groovy
+           - url: https://raw.githubusercontent.com/logevents/demo-infra/master/jobDslSeed.groovy
        script-approval: |
          security:
            scriptApproval:
@@ -340,7 +340,7 @@ master:
         volumeMounts:
           - name: filebeat-config
             mountPath: "/usr/share/filebeat/filebeat.yml"
-            subPath: "minimalFilebeatConfig.yml"
+            subPath: "filebeat-cm.yml"
           - name: jenkins-home
             mountPath: "/mnt/jenkins_home"
             readOnly: true
@@ -609,7 +609,7 @@ persistence:
   volumes:
     - name: filebeat-config
       configMap:
-        name: jenkins-filebeat-minimal
+        name: jenkins-filebeat
   mounts:
   #  - mountPath: /var/nothing
   #    name: nothing
