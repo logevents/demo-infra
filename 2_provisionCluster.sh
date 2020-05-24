@@ -1,1 +1,1 @@
-kubectl apply -f provisionCluster.yml
+./k8s/k8s.sh k8s/provision-cluster.yml
