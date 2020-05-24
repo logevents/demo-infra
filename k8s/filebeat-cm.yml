@@ -6,11 +6,15 @@ filebeat.inputs:
     enabled: true
     paths:
       - /mnt/jenkins_home/jobs/*/builds/*/log
+    fields:
+      topic: "log-builds"
   # logs from slaves
   - type: log
     enabled: true
     paths:
       - /var/jenkins_home/logs/slaves/*/slave.log
+    fields:
+      topic: "log-slaves"
 
 #TODO Jenkins master log
 
@@ -18,6 +22,7 @@ fields:
   protocol: "${PROTOCOL}"
   master: "${MASTER}"
   domain: "${DOMAIN}"
+  domainSuffix: "${DOMAINSUFFIX}"
 
 #============================= Filebeat modules ===============================
 
@@ -29,7 +34,7 @@ filebeat.config.modules:
 
 output.kafka:
   hosts: ["kafka-0.kafka:9092"]
-  topic: 'filebeat-1'
+  topic: 'filebeat-%{[fields][topic]}-1'
   partition.round_robin:
     reachable_only: false
   required_acks: 1

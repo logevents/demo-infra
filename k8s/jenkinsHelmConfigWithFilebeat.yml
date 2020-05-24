@@ -337,6 +337,8 @@ master:
             value: "http"
           - name: "DOMAIN"
             value: "{{ tpl .Release.Name . }}"
+          - name: "DOMAINSUFFIX"
+            value: ".logevents.nowhere"
         volumeMounts:
           - name: filebeat-config
             mountPath: "/usr/share/filebeat/filebeat.yml"
