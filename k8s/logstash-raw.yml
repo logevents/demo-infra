@@ -51,6 +51,12 @@ data:
         mutate { rename => ["[log][offset]", "[fileOffset]"] }
         mutate { add_field => { "kafkaOffset" => "%{[@metadata][kafka][offset]}}" } }
         mutate { convert => { "kafkaOffset" => "integer" } }
+        if [message] =~ "\|duration\|" {
+            dissect { mapping => { "message" => "%{@timestamp}|%{type}|%{subType}|%{message}" } }
+        } else {
+            mutate { add_field => { "type" => "log" "subType" => "inf" } }
+        }
+        mutate { remove_field => [ "buildTmp", "fields", "host", "@metadata", "input", "agent", "ecs" ] }
         mutate { remove_field => [ "buildTmp", "fields", "host", "@metadata", "input", "agent", "ecs" ] }
     }
 
