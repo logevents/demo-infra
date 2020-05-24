@@ -21,7 +21,7 @@ private void createJob(java.lang.String jobName, projectUrl) {
                         
                             checkout([\$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: '$projectUrl']]])
 
-                            checkoutByDate(\$checkoutdate)
+                            checkoutByDate(checkoutdate)
                        
                         
                             writeFile file: "init.gradle", text: initEnableWarnings
