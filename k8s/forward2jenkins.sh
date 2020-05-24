@@ -1,3 +1,3 @@
 #!/bin/bash
 
-kubectl port-forward svc/my-release-jenkins 8080:8080
+kubectl port-forward svc/logevent-jenkins 8080:8080

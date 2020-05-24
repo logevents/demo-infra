@@ -1,1 +1,0 @@
-helm install -f k8s/jenkinsHelmConfigWithFilebeat.yml my-release stable/jenkins

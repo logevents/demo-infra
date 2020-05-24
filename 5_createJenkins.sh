@@ -1,0 +1,1 @@
+helm install -f k8s/jenkinsHelmConfig.yml logevent stable/jenkins
