@@ -240,9 +240,12 @@ master:
   initScripts:
     - |
       import jenkins.model.Jenkins;
-      Jenkins.instance.getItemByFullName("spring-framework").scheduleBuild2(1);
-      Jenkins.instance.getItemByFullName("spring-framework").scheduleBuild2(2);
-      Jenkins.instance.getItemByFullName("spring-framework").scheduleBuild2(3);
+      Jenkins.instance.getItemByFullName("spring-framework").scheduleBuild2(0);
+      try { Thread.sleep(1000); } catch (Exception e) { }
+      Jenkins.instance.getItemByFullName("spring-framework").scheduleBuild2(0);
+      try { Thread.sleep(1000); } catch (Exception e) { }
+      Jenkins.instance.getItemByFullName("spring-framework").scheduleBuild2(0);
+
 
   # Kubernetes secret that contains a 'credentials.xml' for Jenkins
   # credentialsXmlSecret: jenkins-credentials
