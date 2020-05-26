@@ -16,7 +16,6 @@ filebeat.inputs:
     fields:
       topic: "log-slaves"
 
-#TODO Jenkins master log
 
 fields:
   protocol: "${PROTOCOL}"
