@@ -30,7 +30,7 @@ data:
             group_id => "logstash-view"
             client_id => "logstash-view"
             bootstrap_servers => "${KAFKA_SERVERS}"
-            auto_offset_reset => "latest"
+            auto_offset_reset => "earliest"
             topics_pattern => "${LOGSTASH_VIEW_PATTERN}"
             decorate_events => true
             codec => json

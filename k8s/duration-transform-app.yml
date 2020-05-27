@@ -33,4 +33,4 @@ spec:
         - containerPort: 8080
         command: ["bash", "-ec", "cd /opt
           && curl -O http://repo/transform.zip && unzip transform.zip
-          && ./transform/bin/transform durationTf kafka-0.kafka:9092 duration-agg latest logevent-1 duration-1"]
+          && ./transform/bin/transform durationTf kafka-0.kafka:9092 duration-agg earliest logevent-1 duration-1"]

@@ -30,7 +30,7 @@ data:
             group_id => "logstash-raw"
             client_id => "logstash-raw"
             bootstrap_servers => "${KAFKA_SERVERS}"
-            auto_offset_reset => "latest"
+            auto_offset_reset => "earliest"
             topics_pattern => "${RAW_TOPIC_PATTERN}"
             decorate_events => true
             codec => json
