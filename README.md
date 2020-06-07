@@ -1,6 +1,10 @@
 # demo-infra
 Kubernetes deployments to create our example setup (Jenkins, Kafka, Elasticsearch, Filebeat and java transformations)
 
+The presentation explaing motivation, purpose and hands-on session with this repository is available here (in german):
+https://www.youtube.com/watch?v=JKdJ4h9gIQg
+
+
 ## Preconditions
 
 
