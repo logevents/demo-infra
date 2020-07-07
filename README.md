@@ -16,7 +16,11 @@ https://www.youtube.com/watch?v=JKdJ4h9gIQg
   * Initializiation: https://cloud.google.com/sdk/docs/initializing?hl=de
   * Authorization: https://cloud.google.com/sdk/docs/authorizing?hl=de 
 * kubectl is installed
-  * https://kubernetes.io/de/docs/tasks/tools/install-kubectl/
+  * https://kubernetes.io/de/docs/tasks/tools/install-kubectl/ 
+* helm is installed
+  * https://helm.sh/docs/intro/install/
+  * helm stable repository is added
+  ** `helm repo add stable https://kubernetes-charts.storage.googleapis.com`
 * Cloning this repository to your machine
 
 ## Using this repo to create the demonstration infrastructure

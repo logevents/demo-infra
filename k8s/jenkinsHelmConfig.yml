@@ -1,6 +1,7 @@
 
 master:
-  useSecurity: false
+  adminUser: "admin"
+  adminPassword: "admin"
   resources:
     requests:
       cpu: "100m"
