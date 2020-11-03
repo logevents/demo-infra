@@ -14,13 +14,17 @@ https://www.youtube.com/watch?v=JKdJ4h9gIQg
 * gcloud tool installed and authenticated
   * General setup instructions: https://cloud.google.com/sdk/install?hl=de
   * Initializiation: https://cloud.google.com/sdk/docs/initializing?hl=de
-  * Authorization: https://cloud.google.com/sdk/docs/authorizing?hl=de 
+  * Authorization: https://cloud.google.com/sdk/docs/authorizing?hl=de
 * kubectl is installed
-  * https://kubernetes.io/de/docs/tasks/tools/install-kubectl/ 
+  * https://kubernetes.io/de/docs/tasks/tools/install-kubectl/
 * helm is installed
   * https://helm.sh/docs/intro/install/
   * helm stable repository is added
-  ** `helm repo add stable https://kubernetes-charts.storage.googleapis.com`
+  ** `helm repo add stable https://charts.helm.sh/stable`
+  ** `helm repo add jenkins https://charts.jenkins.io`
+* envsubst is available
+  * On mac you can install envsubst with gettext package via brew
+  ** `brew install gettext`
 * Cloning this repository to your machine
 
 ## Using this repo to create the demonstration infrastructure
@@ -34,5 +38,9 @@ https://www.youtube.com/watch?v=JKdJ4h9gIQg
 * run `4_createJenkins.sh` to create jenkins instance with customized helm chart (jenkins with spring jobs on it)
 * run `5_prepareBuildApp.sh` to compile and upload java app (code form here: https://github.com/logevents/demo-streaming-apps)
 * run `6_createELK.sh` create all elasticsearch, logstash, kibana components from log transformation
-* run `7_transformationApps.sh` to start the compiled app (step 5) 
-  
+* run `7_transformationApps.sh` to start the compiled app (step 5)
+
+
+# Shutdown
+* destroy created resource by running
+** `deleteCluster.sh`
